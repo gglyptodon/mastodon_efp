@@ -21,31 +21,36 @@ var yAxis = d3.svg.axis().scale(y)
 var valueline = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.close); });
-    
-var sgv = function(){
 
+var gene=null;
+var geneselect = document.getElementById("#geneselect");
+var sgv = function(){
+geneselect = document.getElementById("geneselect");
+console.log(geneselect.value,"gs");
+gene = geneselect.value;
 //var expdata = d3.json("testdata/testdata_efp.json", function(data) {
 d3.csv("testdata/testdata_efp.csv", function(error, data) {
 var mapping = {
 "BS_S1" : null, 
 "BS_S2" : null, 
-"BS_S3":null,
-"BS_S4":null,
-"BS_S5":null,
+"BS_S3": null,
+"BS_S4": null,
+"BS_S5": null,
 "M_S1": null,
 "M_S2": null,
 "M_S3": null,
 "M_S4": null,
 "M_S5": null,
-
+"Stem": null,
+"Root": null,
+"Husk": null,
 }
 
 data.forEach(function(d) {
-
 	Object.keys(mapping).forEach(function(key) {
         	console.log(key);
-    	
-            if (d.tissue == key){
+            if (d.tissue === key && d.gene === gene){
+                console.log(gene, d.gene);
 		mapping[key]= d.value;
 		}
 	    });
@@ -57,18 +62,20 @@ var z = d3.scale.linear()
 .domain(
 [ d3.min(data,function(d){return d.value})
  ,d3.max(data,function(d){return d.value})
-]).range(["blue","yellow"]);
+]).range(["purple","yellow"]);
 console.log(z);
 
-var div_zma_select = d3.select("#zma");
+var div_zmaD2016_select = d3.select("#zmaD2016");
 var tissues = Object.keys(mapping); // ["M_S1", "M_S2", "M_S3", "M_S4", "M_S5", "BS_S1","BS_S2", "BS_S3", "BS_S4","BS_S5"];
 d3.text("resources/svg/zma1.svg", function(error, externalSVG) {
          if (error) {console.log(error); return;}
-        div_zma_select.html(externalSVG);
+        div_zmaD2016_select.html(externalSVG);
 //var t="BS_S1";
-tissues.forEach(function(t){ 
-	var cpath = div_zma_select.select("svg").select("#layer1").select("path#"+t).attr("style", function(){console.log(mapping[t], z(mapping[t]));return "fill:"+z(mapping[t])})
-
+tissues.forEach(function(t){
+        if (mapping[t] == null){}
+	else{ 
+	div_zmaD2016_select.select("svg").select("#layer1").select("path#"+t).attr("style", function(){console.log(mapping[t], z(mapping[t]));return "fill:"+z(mapping[t])})
+}
 
 });
 //var BS1 =  paths
