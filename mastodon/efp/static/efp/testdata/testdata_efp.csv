@@ -1,0 +1,14 @@
+study,tissue,value,gene
+D2016,M_S1,-1,tmp1
+D2016,M_S2,-2,tmp1
+D2016,M_S3,-3,tmp2
+D2016,M_S4,-4,tmp1
+D2016,M_S5,-5,tmp1
+D2016,BS_S4,4,tmp2
+D2016,BS_S1,-1,tmp1
+D2016,BS_S2,12,tmp1
+D2016,BS_S3,-3,tmp1
+D2016,BS_S5,5,tmp2
+D2016,Root,-30,tmp1
+D2016,Stem,50,tmp2
+D2016,Husk,5,tmp2

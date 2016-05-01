@@ -1,0 +1,6 @@
+view: to dynamically serve csv id by geneid
+model:save csv -> genename, description, tissue,study,value, species,expressed_rank in db
+template: modify template to load csv dynamically
+
+
+

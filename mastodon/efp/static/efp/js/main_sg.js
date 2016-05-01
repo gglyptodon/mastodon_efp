@@ -23,16 +23,22 @@ var valueline = d3.svg.line()
     .y(function(d) { return y(d.close); });
 
 var gene=null;
+var urltmp = null;
 var geneselect = document.getElementById("#geneselect");
-var sgv = function(){
+var sgv = function(url){
+    if (url){
+        urltmp = url;
+    }
+    console.log("url",url);
 geneselect = document.getElementById("geneselect");
 console.log(geneselect.value,"gs");
 gene = geneselect.value;
 //var expdata = d3.json("testdata/testdata_efp.json", function(data) {
-d3.csv("testdata/testdata_efp.csv", function(error, data) {
-var mapping = {
-"BS_S1" : null, 
-"BS_S2" : null, 
+d3.csv(urltmp, function(error, data) {
+    console.log("d3",data);
+    var mapping = {
+"BS_S1" : null,
+"BS_S2" : null,
 "BS_S3": null,
 "BS_S4": null,
 "BS_S5": null,
@@ -44,18 +50,18 @@ var mapping = {
 "Stem": null,
 "Root": null,
 "Husk": null,
-}
-
+};
+console.log(data,"data");
 data.forEach(function(d) {
 	Object.keys(mapping).forEach(function(key) {
-        	console.log(key);
+        	console.log(key, d.value,"val",d);
             if (d.tissue === key && d.gene === gene){
                 console.log(gene, d.gene);
 		mapping[key]= d.value;
 		}
 	    });
 	})
-	
+
 
 console.log(mapping);
 var z = d3.scale.linear()
@@ -67,14 +73,15 @@ console.log(z);
 
 var div_zmaD2016_select = d3.select("#zmaD2016");
 var tissues = Object.keys(mapping); // ["M_S1", "M_S2", "M_S3", "M_S4", "M_S5", "BS_S1","BS_S2", "BS_S3", "BS_S4","BS_S5"];
-d3.text("resources/svg/zma1.svg", function(error, externalSVG) {
+d3.text("/static/efp/resources/svg/zma1.svg", function(error, externalSVG) {
          if (error) {console.log(error); return;}
         div_zmaD2016_select.html(externalSVG);
 //var t="BS_S1";
 tissues.forEach(function(t){
+    console.log(t,"tissue", mapping[t], mapping)
         if (mapping[t] == null){}
-	else{ 
-	div_zmaD2016_select.select("svg").select("#layer1").select("path#"+t).attr("style", function(){console.log(mapping[t], z(mapping[t]));return "fill:"+z(mapping[t])})
+	else{
+	div_zmaD2016_select.select("svg").select("#layer1").select("path#"+t).attr("style", function(){console.log(mapping[t], z(mapping[t]), "mapping");return "fill:"+z(mapping[t])})
 }
 
 });

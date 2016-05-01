@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+{% load static from staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "vendor/bootstrap.min.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "vendor/bootstrap-theme.min.css" %}" type="text/css"/>
+    <script src="{% static "vendor/jquery-1.12.1.min.js" %}"></script>
+    <script src="{% static "vendor/bootstrap.min.js" %}"></script>
+    <script src="{% static "vendor/d3.v3.min.js" %}"></script>
+    <link rel="stylesheet" href="{% static "vendor/SlickGrid/slick.grid.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "vendor/SlickGrid/css/smoothness/jquery-ui-1.8.16.custom.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "vendor/SlickGrid/examples/examples.css" %}"  type="text/css"/>
+
+    <script src="{% static "vendor/SlickGrid/lib/jquery-1.7.min.js" %}"></script>
+    <script src="{% static "vendor/SlickGrid/lib/jquery.event.drag-2.2.js" %}" ></script>
+
+    <script src="{% static "vendor/SlickGrid/slick.core.js" %}" ></script>
+    <script src="{% static "vendor/SlickGrid/slick.grid.js" %}" ></script>
+    <script src="{% static "vendor/SlickGrid/slick.dataview.js" %}" ></script>
+
+<style type="text/css">
+	div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 160px;
+  height: 20px;
+  padding: 2px;
+  font: 11px sans-serif;
+  background: white;
+  border: 0px;
+  border-radius: 1px;
+  pointer-events: none;
+}
+    * {
+  font-family: arial;
+  font-size: 8pt;
+}
+.tile2 {
+    background-color: #CCC;
+}
+rect{
+    background-color:#ccc;
+}
+rect:hover{
+    box-shadow: 0 0 20px yellow;
+}
+</style>
+
+    {% block head %}{% endblock %}
+
+</head>
+<body>
+<div class="container">
+
+    <hr>
+<div class="col-xs-4">
+</div>
+
+<div id="navbar">
+    {% block navbar %}
+        <ul>
+            <div class="container col-xs-8">
+                <div>
+                    <nav>
+                        <ul class = 'nav nav-pills pull-right'>
+                            <li class="{% ifequal request.path '/repo/'%} active {% endifequal%}">
+                                <a href="{% url "index" %}">Home</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </ul>
+    {% endblock %}
+</div>
+</div>
+<div>
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>
