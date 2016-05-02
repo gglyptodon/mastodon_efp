@@ -1,5 +1,8 @@
 from django.shortcuts import render
-from .models import Gene
+from django.http import JsonResponse
+from .models import Gene,TPM_csv
+
+import json
 
 # Create your views here.
 def sgjson(request):
@@ -40,10 +43,16 @@ def gene_index(request):
     template = 'efp/index_efp.htm'
     return render(request=request, template_name=template, context=context)
 
+def tablejson(request):
+    name="foo"
+    context = {}
+    result = TPM_csv.objects.get(name=name)
+    res = json.loads(result.source_json_TPM)
+    return JsonResponse(res,safe=False)
+
 def table(request):
     context = {}
-    result_list = Gene.objects.all()
-    context["result_list"] = [str(r.maize_name) for r in result_list]
+
     template = 'efp/table.htm'
     return render(request=request, template_name=template, context=context)
 

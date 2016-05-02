@@ -11,16 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
     <div class="jumbotron">
       <div class="container">
+          <div id="myGrid" style="width:1100px;height:500px;"></div>
 <div id="geneselid">
-<!--<select id="geneselect" class="form-control" onchange="sgv("{% static "vendor/d3.v3.min.js" %}");">
--->
-<!--<select id="geneselect" class="selectpicker" data-live-search="true" onchange='sgv();' >-->
-
-    {% for r in result_list %}
-<a href="{% url 'efp' r %}"> {{r}}</a> <br>
-
-    {% endfor %}
-<!--</select>-->
 </div>
 
       <div id="zmaD2016"> </div>
@@ -41,5 +33,66 @@
 
         <!--<script src="js/main_sg.js"></script>-->
 
-    <script> sgv("{% static "efp/testdata/testdata_efp.csv" %}")</script>
+
+
+    <div id="fmtww"></div>
+    <div id="fmtwd"></div>
+
+
+<script type="text/javascript">
+d3.json("{% url "tablejson" %}", function(error, data) {
+    console.log(data,"data");
+
+    console.log(error,"errr");
+    var dt = data;
+    var grid;
+    var columns = [
+        {id: "maize_name", name: "Maize ID", field: "maize_name", sortable: true},
+        {id: "d2016BS3", name: "Denton_2016.BS.Slice_3", field: "Denton_2016.BS.Slice_3", sortable: true},
+
+    ];
+
+    var options = {
+        enableCellNavigation: true,
+        enableColumnReorder: false,
+        multiColumnSort: true
+    };
+    dataview = new Slick.Data.DataView();
+    grid = new Slick.Grid("#myGrid", dt, columns, options);
+    dataview.setItems(dt);
+    dataview.onRowCountChanged.subscribe(function (e, args) {
+        grid.updateRowCount();
+        grid.render();
+    });
+    dataview.onRowsChanged.subscribe(function (e, args) {
+        grid.invalidateRows(args.rows);
+        grid.render();
+    });
+
+    grid.onSort.subscribe(simplesort)
+
+    function simplesort(e, args) {
+        var cols = args.sortCols;
+        var multisort = args.multiColumnSort;
+        dataview.sort(function (dataRow1, dataRow2) {
+            for (var i = 0; i < cols.length; i++) {
+                var field = cols[i].sortCol.field;
+                var value1 = dataRow1[field];
+                var value2 = dataRow2[field];
+                if (value1 == value2) continue;
+                var sign = cols[i].sortAsc ? 1 : -1;
+                return (value1 > value2) ? sign : -sign;
+            }
+            return 0;
+        });
+    }
+});
+
+
+
+
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+</script>
 {%endblock%}
