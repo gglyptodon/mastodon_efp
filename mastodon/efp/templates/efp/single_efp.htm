@@ -14,19 +14,17 @@
 <div id="geneselid">
 <!--<select id="geneselect" class="form-control" onchange="sgv("{% static "vendor/d3.v3.min.js" %}");">
 -->
-<select id="geneselect" class="selectpicker" data-live-search="true" onchange='sgv();' >
-
-    {% for r in result_list %}
-    <option value={{ r.maize_name }}> {{ r.maize_name }} </option>
-    {% endfor %}
-
-
-</select>
+<!--<select id="geneselect" class="selectpicker" data-live-search="true" onchange='sgv();' >-->
+<!---->
+    <!--{% for r in result_list %}-->
+    <!--<option value={{ r.maize_name }}> {{ r.maize_name }} </option>-->
+    <!--{% endfor %}-->
+<!---->
+<!---->
+<!--</select>-->
 </div>
 
       <div id="zmaD2016"> </div>
-      <div id="dummy1"> </div>
-      <div id="dummy2"> </div>
 
       </div>
     </div>
@@ -42,5 +40,6 @@
 
         <!--<script src="js/main_sg.js"></script>-->
 
-    <script> sgv("{% static "efp/testdata/testdata_efp.csv" %}")</script>
+    <!--<script> sgv("{% static "efp/testdata/testdata_efp.csv" %}")</script>-->
+    <script> sgv('{% url "efpjson" result %}')</script>
 {%endblock%}

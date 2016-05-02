@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Gene,TPM_csv
+from django.forms.models import model_to_dict
 
 import json
 
@@ -18,6 +19,13 @@ def efp(request, id):
     context = {'result':result}
     template = 'efp/single_efp.htm'
     return render(request, template, context)
+
+def efpjson(request, id):
+    print(id)
+    result = Gene.objects.get(pk=id)
+    result = model_to_dict(result)
+    return JsonResponse(result, safe=False)
+
 
 def sgindex(request):
     result_list = Gene.objects.all()  # all the results
@@ -52,7 +60,6 @@ def tablejson(request):
 
 def table(request):
     context = {}
-
     template = 'efp/table.htm'
     return render(request=request, template_name=template, context=context)
 
