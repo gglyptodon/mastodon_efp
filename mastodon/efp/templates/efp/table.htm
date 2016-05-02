@@ -11,7 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
     <div class="jumbotron">
       <div class="container">
-          <div id="myGrid" style="width:1100px;height:500px;"></div>
+          <div id="myGrid" style="width:1200px;height:500px;"></div>
 <div id="geneselid">
 </div>
 
@@ -39,16 +39,67 @@
     <div id="fmtwd"></div>
 
 
+
+<link rel="stylesheet" href="{% static "vendor/SlickGrid/slick.grid.css" %}" type="text/css"/>
+    <link rel="stylesheet" href="{% static "vendor/SlickGrid/css/smoothness/jquery-ui-1.8.16.custom.css" %}" type="text/css"/>
+    <!--<link rel="stylesheet" href="{% static "vendor/SlickGrid/examples/examples.css" %}"  type="text/css"/>
+-->
+    <script src="{% static "vendor/SlickGrid/lib/jquery-1.7.min.js" %}"></script>
+    <script src="{% static "vendor/SlickGrid/lib/jquery.event.drag-2.2.js" %}" ></script>
+
+    <script src="{% static "vendor/SlickGrid/slick.core.js" %}" ></script>
+    <script src="{% static "vendor/SlickGrid/slick.grid.js" %}" ></script>
+    <script src="{% static "vendor/SlickGrid/slick.dataview.js" %}" ></script>
+
+
+
+
 <script type="text/javascript">
 d3.json("{% url "tablejson" %}", function(error, data) {
+
+
+
+
+
+
     console.log(data,"data");
 
     console.log(error,"errr");
     var dt = data;
+    for (var i = 0; i < dt.length; i++) {
+   dt[i]["id"] = i;
+ }
     var grid;
     var columns = [
         {id: "maize_name", name: "Maize ID", field: "maize_name", sortable: true},
+        {id: "d2016BS1", name: "Denton_2016.BS.Slice_1", field: "Denton_2016.BS.Slice_1", sortable: true},
+        {id: "d2016BS2", name: "Denton_2016.BS.Slice_2", field: "Denton_2016.BS.Slice_2", sortable: true},
         {id: "d2016BS3", name: "Denton_2016.BS.Slice_3", field: "Denton_2016.BS.Slice_3", sortable: true},
+        {id: "d2016BS4", name: "Denton_2016.BS.Slice_4", field: "Denton_2016.BS.Slice_4", sortable: true},
+        {id: "d2016BS5", name: "Denton_2016.BS.Slice_5", field: "Denton_2016.BS.Slice_5", sortable: true},
+
+        {id: "d2016M1", name: "Denton_2016.M.Slice_1", field: "Denton_2016.M.Slice_1", sortable: true},
+        {id: "d2016M2", name: "Denton_2016.M.Slice_2", field: "Denton_2016.M.Slice_2", sortable: true},
+        {id: "d2016M3", name: "Denton_2016.M.Slice_3", field: "Denton_2016.M.Slice_3", sortable: true},
+        {id: "d2016M4", name: "Denton_2016.M.Slice_4", field: "Denton_2016.M.Slice_4", sortable: true},
+        {id: "d2016M5", name: "Denton_2016.M.Slice_5", field: "Denton_2016.M.Slice_5", sortable: true},
+
+        {id: "t2014BS4", name: "Tausta_2014.BS.Section_4", field: "Tausta_2014.BS.Section_4", sortable: true},
+        {id: "t2014BS9", name: "Tausta_2014.BS.Section_9", field: "Tausta_2014.BS.Section_9", sortable: true},
+        {id: "t2014BS14", name: "Tausta_2014.BS.Section_14", field: "Tausta_2014.BS.Section_14", sortable: true},
+
+
+        {id: "t2014M4", name: "Tausta_2014.M.Section_4", field: "Tausta_2014.M.Section_4", sortable: true},
+        {id: "t2014M9", name: "Tausta_2014.M.Section_9", field: "Tausta_2014.M.Section_9", sortable: true},
+        {id: "t2014M14", name: "Tausta_2014.M.Section_14", field: "Tausta_2014.M.Section_14", sortable: true},
+
+        {id: "c2012BS", name: "Chang_2012.BS", field: "Chang_2012.BS", sortable: true},
+        {id: "c2012M", name: "Chang_2012.M", field: "Chang_2012.M", sortable: true},
+
+
+        {id: "l20104", name: "Li_2010.total.Section_4", field: "Li_2010.total.Section_4", sortable: true},
+        {id: "l20109", name: "Li_2010.total.Section_9", field: "Li_2010.total.Section_9", sortable: true},
+        {id: "l201014", name: "Li_2010.total.Section_14", field: "Li_2010.total.Section_14", sortable: true},
 
     ];
 
