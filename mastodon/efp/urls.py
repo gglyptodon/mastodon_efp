@@ -11,6 +11,6 @@ urlpatterns = [
     url(r'^mgindex/$', views.mgindex, name='mgindex'),
     url(r'^genes/$', views.genes, name='genes'),
     url(r'^geneindex/$', views.gene_index, name='geneindex'),
-
+    url(r'^table/$', views.table, name='table'),
     url(r'^efp/(?P<id>[a-zA-Z0-9_.]+)/$', views.efp, name='efp'),
 ]
