@@ -4,12 +4,23 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import datetime
 from uuid import uuid4
+import json
 
 class TPM_csv(models.Model):
     source_csv_TPM = models.FileField(null=True, blank=True)
+    name = models.CharField(max_length=100)
+    source_json_TPM = models.TextField(blank=True, null=True)
+    def __unicode__(self):
+        return self.name
+
+
 
 class FDR_csv(models.Model):
     source_csv_FDR = models.FileField(null=True, blank=True)
+    name = models.CharField(max_length=100)
+    def __unicode__(self):
+        return self.name
+
 
 class Gene(models.Model):
     """
@@ -114,6 +125,24 @@ class Gene(models.Model):
     def __unicode__(self):
         return self.maize_name
 
+@receiver(post_save, sender=TPM_csv)
+def tpm_to_json(sender,  created, **kwargs):
+    inst = kwargs.get('instance')
+    csv = inst.source_csv_TPM._get_path()
+    res = []
+    if created:
+        with open(csv,'r') as infile:
+            headers = [r.strip().strip('"') for r in infile.readline().strip().split(",")]
+            if not headers[0]:
+                headers[0] = "maize_name"
+            for l in infile:
+                l = [x.strip().strip('"') for x in l.strip().strip('"').split(",")]
+                res.append(dict(zip(headers,l)))
+        print("res",res)
+        inst.source_json_TPM = json.dumps(res)
+        inst.save()
+
+
 
 @receiver(post_save, sender=TPM_csv)
 def init_tpm(sender, **kwargs):
@@ -150,7 +179,6 @@ def init_tpm(sender, **kwargs):
         header = [x.strip('"').strip() for x in header.split(',')]
         for i,v in enumerate(header):
             idmapper[v] = i
-        print idmapper;
         for l in incsv:
             l = l.strip('\n')
             print(l.strip().split(","))
