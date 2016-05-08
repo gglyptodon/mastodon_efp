@@ -25,7 +25,6 @@ class FDR_csv(models.Model):
 
 class Gene(models.Model):
     """
-    "","
     Tausta_2014.BS.Section_4",
     "Tausta_2014.BS.Section_9",
     "Tausta_2014.BS.Section_14",

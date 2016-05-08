@@ -83,7 +83,7 @@ var z = d3.scale.linear()
 .domain(
 [ d3.min(allvals)//,function(d){return d.value})
  ,d3.max(allvals)//data,function(d){return d.value})
-]).range(["purple","yellow"]);
+]).range(["yellow","red"]);
 console.log(z);
 
 var div_zmaD2016_select = d3.select("#zmaD2016");
