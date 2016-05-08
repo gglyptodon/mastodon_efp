@@ -55,16 +55,16 @@
 
 
 <script type="text/javascript">
-d3.json("{% url "tablejson" %}", function(error, data) {
+//d3.json("{% url "tablejson" %}", function(error, data) {
+d3.json("{% static "efp/resources/tb.json" %}", function(error, data) {
 
 
 
 
 
+  //  console.log(data,"data");
 
-    console.log(data,"data");
-
-    console.log(error,"errr");
+  //  console.log(error,"errr");
     var dt = data;
     for (var i = 0; i < dt.length; i++) {
    dt[i]["id"] = i;
