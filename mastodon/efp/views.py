@@ -46,8 +46,8 @@ def genes(request):
 
 def gene_index(request):
     context = {}
-    result_list = Gene.objects.all()
-    context["result_list"] = [str(r.maize_name) for r in result_list]
+    #result_list = Gene.objects.all()
+    #context["result_list"] = [str(r.maize_name) for r in result_list]
     #todo this is a static list
     template = 'efp/index_efp.htm'
     return render(request=request, template_name=template, context=context)
