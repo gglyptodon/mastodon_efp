@@ -46,8 +46,9 @@ def genes(request):
 
 def gene_index(request):
     context = {}
-    result_list = Gene.objects.all()
-    context["result_list"] = [str(r.maize_name) for r in result_list]
+    #result_list = Gene.objects.all()
+    #context["result_list"] = [str(r.maize_name) for r in result_list]
+    #todo this is a static list
     template = 'efp/index_efp.htm'
     return render(request=request, template_name=template, context=context)
 
@@ -56,6 +57,7 @@ def tablejson(request):
     context = {}
     result = TPM_csv.objects.get(name=name)
     res = json.loads(result.source_json_TPM)
+    #todo: serve static file!
     return JsonResponse(res,safe=False)
 
 def table(request):
@@ -68,3 +70,6 @@ def index(request):
     result_list = Gene.objects.all()  # all the results
     context = {'result_list': result_list}
     return render(request, 'efp/index.htm', context)
+
+
+
