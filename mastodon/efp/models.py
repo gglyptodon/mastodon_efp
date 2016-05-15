@@ -138,7 +138,8 @@ def tpm_to_json(sender,  created, **kwargs):
             for l in infile:
                 l = [x.strip().strip('"') for x in l.strip().strip('"').split(",")]
                 res.append(dict(zip(headers,l)))
-        print("res",res)
+        #print("res",res)
+
         inst.source_json_TPM = json.dumps(res)
         inst.save()
 
@@ -181,10 +182,10 @@ def init_tpm(sender, **kwargs):
             idmapper[v] = i
         for l in incsv:
             l = l.strip('\n')
-            print(l.strip().split(","))
+            #print(l.strip().split(","))
             vals = [x.strip('"').strip() for x in l.split(",")]
             for k,v in idmapper.items():
-                print(k,v)
+                #print(k,v)
                 if k == "Tausta_2014.BS.Section_4":
                     expression_TPM_Tausta_BSS4 = vals[v]
                 elif k == "Tausta_2014.BS.Section_9":
@@ -231,7 +232,7 @@ def init_tpm(sender, **kwargs):
             newgene = Gene()
             newgene.maize_name = vals[0]
             #newgene.expression_TPM_Li_totalS4 = expression_TPM_Li_totalS4
-            print("newgene",newgene)
+            #print("newgene",newgene)
             newgene.expression_TPM_Tausta_BSS14 = expression_TPM_Tausta_BSS14
             newgene.expression_TPM_Tausta_BSS4 = expression_TPM_Tausta_BSS4
             newgene.expression_TPM_Tausta_BSS9 = expression_TPM_Tausta_BSS9
@@ -268,7 +269,7 @@ def init_fdr(sender, **kwargs):
     csv = inst.source_csv_FDR._get_path()
     with open(csv, 'r') as incsv:
         header = incsv.readline()
-        print(header.split(","))
+        #print(header.split(","))
         #for l in incsv:
         #    vals = l.split(",")
         #    for k,v in id
