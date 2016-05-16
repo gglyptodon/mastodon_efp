@@ -1,5 +1,34 @@
 {% extends 'efp/base.html' %}
 {% load static from staticfiles %}
+{% block header %}
+
+<style>
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.caption {
+  font-weight: bold;
+}
+
+.key path {
+  display: none;
+}
+
+.key line {
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+</style>
+
+{% endblock %}
 
 {% block content %}
     <script src="{% static "efp/js/main_sg.js" %}"></script>
@@ -30,16 +59,20 @@
     </div>
 
     <div class="container">
-      <!-- Example row of columns -->
       </div>
+<div id="legend"></div>
       <hr>
+<script>
+
+</script>
+
+
+
+
 
       <footer>
       </footer>
     </div>
 
-        <!--<script src="js/main_sg.js"></script>-->
-
-    <!--<script> sgv("{% static "efp/testdata/testdata_efp.csv" %}")</script>-->
     <script> sgv('{% url "efpjson" result %}')</script>
 {%endblock%}
