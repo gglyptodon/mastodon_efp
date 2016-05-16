@@ -5,11 +5,9 @@ var margin = {top: 30, right: 20, bottom: 30, left: 50},
 
 var urltmp = null;
 var sgv = function (url) {
-    console.log("nurl", url);
     if (url) {
         urltmp = url;
     }
-    console.log("url", url, urltmp);
     d3.json(url, function (error, data) {
         var allvals = [];
         data = [data];
@@ -40,8 +38,6 @@ var sgv = function (url) {
             Object.keys(mapping).forEach(function (key) {
                 mapping[key] = d.value;
                 allvals.push(d[key]);
-
-                //}
             });
         });
 
@@ -49,49 +45,77 @@ var sgv = function (url) {
         var z = d3.scale.linear()
             .domain(
             [d3.min(allvals), (d3.min(allvals)+d3.max(allvals))/2,
-                d3.max(allvals)//data,function(d){return d.value})
+                d3.max(allvals)//
             ]).range(["white","yellow", "red"]);
-        console.log(z);
 
         var div_zmaD2016_select = d3.select("#zmaD2016");
-        var tissues = Object.keys(mapping); // ["M_S1", "M_S2", "M_S3", "M_S4", "M_S5", "BS_S1","BS_S2", "BS_S3", "BS_S4","BS_S5"];
-//d3.text("/static/efp/resources/svg/zma1.svg", function(error, externalSVG) {
+        var tissues = Object.keys(mapping); //
         d3.text("/static/efp/resources/svg/dummy.svg", function (error, externalSVG) {
             if (error) {
-                console.log(error);
                 return;
             }
             div_zmaD2016_select.html(externalSVG);
-//var t="BS_S1";
             tissues.forEach(function (t) {
                 mapping[t] = data[0][t];
-                console.log(t, "tissue", data[0][t]);//, mapping[t], mapping);
                 if (mapping[t] == null) {
                 }
                 else {
-                    console.log("KAJSHD");
-                    console.log("path#" + t, mapping[t], z(mapping[t]))
-                    //console.log("path#"+t, );
                     var bla = div_zmaD2016_select.select("svg").select("#layer1");
-                    console.log(bla, 'bla');
                     var blabla = bla.select("path#" + t);
-                    console.log(blabla, 'aslkdj')
-                    //div_zmaD2016_select.select("svg").select("#layer1")
                     blabla.attr("style", function () {
-                        console.log(mapping[t], z(mapping[t]), "mapping");
                         return "fill:" + z(mapping[t])
                     })
                 }
 
             });
-//var BS1 =  paths
-//	.data(data, function(d) { return d.tissue; });
-//console.log(BS1);
-//console.log(data);
-            //.attr("style", function(d,i){
-            //	console.log(d, "D",i);return "fill:#FF0000"
-            //});
         });
 
-    });
+ var tmpsvg = d3.select("#legend").append("svg")
+     .style("width", 400)
+    .style("height", 30);
+
+
+        var defs = tmpsvg.append("defs");
+
+var linearGradient = defs.append("linearGradient")
+    .attr("id", "linear-gradient");
+
+linearGradient
+    .attr("x1", "0%")
+    .attr("y1", "0%")
+    .attr("x2", "100%")
+    .attr("y2", "0%");
+linearGradient.append("stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "white");
+linearGradient.append("stop")
+    .attr("offset", "50%")
+    .attr("stop-color", "yellow");
+linearGradient.append("stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "red");
+tmpsvg.append("rect")
+    .attr("transform","translate (20,0)")
+	.attr("width", 300)
+	.attr("height", 30)
+	.style("fill", "url(#linear-gradient)");
+
+  tmpsvg.append("text")
+
+	.attr("x", 7)
+	.attr("y", 5)
+	.attr("dy", "0.9em")
+	.text(d3.min(allvals).toFixed(2));
+
+    tmpsvg.append("text")
+
+	.attr("x", 320)
+	.attr("y", 5)
+	.attr("dy", "0.9em")
+
+	.text(d3.max(allvals).toFixed(2));
+
+});
+
+
 }
