@@ -71,8 +71,8 @@ var sgv = function (url) {
         });
 
  var tmpsvg = d3.select("#legend").append("svg")
-     .style("width", 400)
-    .style("height", 30);
+     .attr("width", 400)
+    .attr("height", 30);
 
 
         var defs = tmpsvg.append("defs");
@@ -105,7 +105,8 @@ tmpsvg.append("rect")
 	.attr("x", 7)
 	.attr("y", 5)
 	.attr("dy", "0.9em")
-	.text(d3.min(allvals).toFixed(2));
+	//.text(d3.min(allvals).toFixed(2));
+	.text("0");
 
     tmpsvg.append("text")
 
