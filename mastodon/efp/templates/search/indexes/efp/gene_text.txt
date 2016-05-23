@@ -1,0 +1,2 @@
+{{ object.maize_name }}
+{{ object.annotation }}
