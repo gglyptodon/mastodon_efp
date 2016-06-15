@@ -72,4 +72,7 @@ def index(request):
     return render(request, 'efp/index.htm', context)
 
 
+def setview(request, id):
+    """ multi gene viewer, eg for displaying conflict sets etc. """
+    pass
 

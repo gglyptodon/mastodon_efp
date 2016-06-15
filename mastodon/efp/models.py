@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from datetime import datetime
 from uuid import uuid4
 import json
+from django.core import serializers
 
 class TPM_csv(models.Model):
     source_csv_TPM = models.FileField(null=True, blank=True)
@@ -21,6 +22,26 @@ class FDR_csv(models.Model):
     name = models.CharField(max_length=100)
     def __unicode__(self):
         return self.name
+#
+# class Set_csv(models.Model):
+#    """ model for csv file for multi gene sets, etc conflict sets. Triggers postsave for populating source_json_set """
+#    source_csv_set = models.FileField(null=True, blank=True)
+#    name = models.CharField(max_length=100)
+# #    source_json_set = models.TextField(blank=True, null=True)
+
+
+class GeneSet(models.Model):
+    """Triggers post_save and get its members (Gene) as json from the csv to members field; Gene instances must exist beforehand """
+    source_csv = models.FileField(null=True, blank=True)
+    members = models.TextField(null=True, blank=True)
+    name = models.CharField(max_length=200, primary_key=True)
+    display_name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.name
+
+
 
 
 class Gene(models.Model):
@@ -124,6 +145,10 @@ class Gene(models.Model):
 #    csv = models.FileField(upload_to=make_unique_directory_path)
     def __unicode__(self):
         return self.maize_name
+
+    def toJson(self):
+        return json.dumps(self.__dict__)
+
 
 @receiver(post_save, sender=TPM_csv)
 def tpm_to_json(sender,  created, **kwargs):
@@ -262,18 +287,57 @@ def init_tpm(sender, **kwargs):
             newgene.source_tpm = inst
             newgene.save()
 
-@receiver(post_save, sender=FDR_csv)
-def init_fdr(sender, **kwargs):
+# @receiver(post_save, sender=FDR_csv)
+# def init_fdr(sender, **kwargs):
+#     inst = kwargs.get('instance')
+#     csv = inst.source_csv_FDR._get_path()
+#     with open(csv, 'r') as incsv:
+#         header = incsv.readline()
+#         print(header.split(","))
+#         #for l in incsv:
+#         #    vals = l.split(",")
+#         #    for k,v in id
+
+@receiver(post_save, sender=GeneSet)
+def set_csv_populate_members(sender, created, **kwargs):
+    """ Populate members from csv for GeneSet """
+    # open csv, csv has only maize identifiers
     inst = kwargs.get('instance')
-    csv = inst.source_csv_FDR._get_path()
-    with open(csv, 'r') as incsv:
-        header = incsv.readline()
-        print(header.split(","))
-        #for l in incsv:
-        #    vals = l.split(",")
-        #    for k,v in id
+    csv = inst.source_csv._get_path()
+    res = []
+    if created:
+        with open(csv, 'r') as infile:
+            for l in infile:
+                l = l.strip()
+                obj = Gene.objects.get(maize_name = l)
+                res.append(obj)#.toJson())
+
+        #resjson = json.dumps(obj)
+        data = serializers.serialize("json", res)
+        print(res, len(res))
+        inst.members = data
+        inst.save()
 
 
+#@receiver(post_save, sender = Set_csv)
+# def set_to_json(sender, created, **kwargs):
+#     """ save json: array of objects todo"""
+#     # todo adjust for set! depends on what csv looks like
+#
+#     inst = kwargs.get('instance')
+#     csv = inst.source_csv_set._get_path()
+#     res = []
+#     if created:
+#         with open(csv, 'r') as infile:
+#             headers = [r.strip().strip('"') for r in infile.readline().strip().split(",")]
+#             if not headers[0]:
+#                 headers[0] = "maize_name"
+#             for l in infile:
+#                 l = [x.strip().strip('"') for x in l.strip().strip('"').split(",")]
+#                 res.append(dict(zip(headers,l)))
+#         print("res", res)
+#         inst.source_json_set = json.dumps(res)
+#         inst.save()
 
 def make_unique_directory_path(instance, filename):
     return 'documents/'+datetime.date.today().isoformat()+"/"+str(uuid4())+'/{0}'.format(filename)

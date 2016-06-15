@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^tablejson/$', views.tablejson, name='tablejson'),
     url(r'^efp/(?P<id>[a-zA-Z0-9_.]+)/$', views.efp, name='efp'),
     url(r'^efpjson/(?P<id>[a-zA-Z0-9_.]+)/$', views.efpjson, name='efpjson'),
+    url(r'^setview/(?P<id>[a-zA-Z0-9_.]+)/$', views.setview, name='setview'),
 ]
