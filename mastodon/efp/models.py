@@ -34,6 +34,7 @@ class GeneSet(models.Model):
     """Triggers post_save and get its members (Gene) as json from the csv to members field; Gene instances must exist beforehand """
     source_csv = models.FileField(null=True, blank=True)
     members = models.TextField(null=True, blank=True)
+    members_name = models.TextField(null=True, blank=True)
     name = models.CharField(max_length=200, primary_key=True)
     display_name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -305,17 +306,20 @@ def set_csv_populate_members(sender, created, **kwargs):
     inst = kwargs.get('instance')
     csv = inst.source_csv._get_path()
     res = []
+    res_name = []
     if created:
         with open(csv, 'r') as infile:
             for l in infile:
                 l = l.strip()
                 obj = Gene.objects.get(maize_name = l)
                 res.append(obj)#.toJson())
+                res_name.append(obj.maize_name)
 
         #resjson = json.dumps(obj)
         data = serializers.serialize("json", res)
         print(res, len(res))
         inst.members = data
+        inst.members_name = res_name
         inst.save()
 
 

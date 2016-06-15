@@ -9,11 +9,13 @@ urlpatterns = [
 
     url(r'^sgindex/$', views.sgindex, name='sgindex'),
     url(r'^mgindex/$', views.mgindex, name='mgindex'),
-    url(r'^genes/$', views.genes, name='genes'),
+    # url(r'^genes/$', views.genes, name='genes'),
     url(r'^geneindex/$', views.gene_index, name='geneindex'),
+    url(r'^genesetindex/$', views.geneset_index, name='genesetindex'),
     url(r'^table/$', views.table, name='table'),
     url(r'^tablejson/$', views.tablejson, name='tablejson'),
     url(r'^efp/(?P<id>[a-zA-Z0-9_.]+)/$', views.efp, name='efp'),
     url(r'^efpjson/(?P<id>[a-zA-Z0-9_.]+)/$', views.efpjson, name='efpjson'),
-    url(r'^setview/(?P<id>[a-zA-Z0-9_.]+)/$', views.setview, name='setview'),
+    url(r'^setview/(?P<id>[a-zA-Z0-9_.-]+)/$', views.setview, name='setview'),
+    url(r'^setmembers/(?P<id>[a-zA-Z0-9_.-]+)/$', views.setmembers, name='setmembers'),
 ]

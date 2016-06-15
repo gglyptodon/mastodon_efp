@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Gene,TPM_csv
+from .models import Gene, GeneSet, TPM_csv
 from django.forms.models import model_to_dict
-
+from django.core import serializers
 import json
 
 # Create your views here.
@@ -37,12 +37,12 @@ def mgindex(request):
     context = {'result_list': result_list}
     return render(request, 'efp/multi_hm.htm', context)
 
-def genes(request):
-    context = {}
-    result_list = Gene.objects.all()[:1000]
-    context["result_list"] = result_list
-    template = 'efp/single_efp.htm'
-    return render(request=request, template_name=template, context=context)
+# def genes(request):
+#     context = {}
+#     result_list = Gene.objects.all()[:1000]
+#     context["result_list"] = result_list
+#     template = 'efp/single_efp.htm'
+#     return render(request=request, template_name=template, context=context)
 
 def gene_index(request):
     context = {}
@@ -50,6 +50,16 @@ def gene_index(request):
     #context["result_list"] = [str(r.maize_name) for r in result_list]
     #todo this is a static list
     template = 'efp/index_efp.htm'
+    return render(request=request, template_name=template, context=context)
+
+def geneset_index(request):
+    context = {}
+    result_list = GeneSet.objects.all()
+    print(result_list)
+    #context["result_list"] = [str(r.name) for r in result_list]
+    context["result_list"] = result_list
+    #todo this is a static list
+    template = 'efp/index_set_efp.htm'
     return render(request=request, template_name=template, context=context)
 
 def tablejson(request):
@@ -67,12 +77,22 @@ def table(request):
 
 
 def index(request):
-    result_list = Gene.objects.all()  # all the results
-    context = {'result_list': result_list}
-    return render(request, 'efp/index.htm', context)
+    #result_list = Gene.objects.all()  # all the results
+    #context = {'result_list': result_list}
+    return render(request, 'efp/index.htm', context={})
 
 
 def setview(request, id):
     """ multi gene viewer, eg for displaying conflict sets etc. """
-    pass
+    result = GeneSet.objects.get(pk=id)
+
+    context = {"result":result}
+    template = 'efp/multi_hm_tmp.htm'
+    print(result.name, result.description)
+    return render(request=request,  template_name=template, context=context)
+
+def setmembers(request, id):
+    """ multi gene viewer, eg for displaying conflict sets etc. """
+    result = GeneSet.objects.get(pk=id)
+    return JsonResponse(result.members, safe=False)
 
