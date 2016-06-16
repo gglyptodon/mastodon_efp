@@ -1,11 +1,10 @@
 {% extends 'efp/base.html' %}
 
 {% block content %}
-
+ <div class="container">
     <div class="jumbotron">
-      <div class="container">
-        <h1>Mastodon EFP</h1>
-        <p> A description etc goes here</p>
+        <h1></h1>
+        <p></p>
 
       </div>
     </div>
@@ -15,8 +14,8 @@
         <div class="col-md-4">
           <h2>View individual gene</h2>
             <a href="{% url 'geneindex' %}">List of all genes</a><br>
-            <a href="{% url 'geneindex' %}">Interesting sets todo</a><br>
-          <p>Description </p>
+            <a href="{% url 'genesetindex' %}">Interesting sets</a><br>
+          <p> </p>
 
         </div>
         <div class="col-md-4">

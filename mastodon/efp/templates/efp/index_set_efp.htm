@@ -1,0 +1,45 @@
+{% extends 'efp/base.html' %}
+{% load static from staticfiles %}
+
+{% block content %}
+    <script src="{% static "efp/js/main_sg.js" %}"></script>
+    <script src="{% static "efp/js/vendor/bootstrap-select.js" %}"></script>
+        <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+  <div class="container">
+<div class="jumbotron">
+
+<div id="geneselid">
+<!--<select id="geneselect" class="form-control" onchange="sgv("{% static "vendor/d3.v3.min.js" %}");">
+-->
+<!--<select id="geneselect" class="selectpicker" data-live-search="true" onchange='sgv();' >-->
+    {% for o in result_list %}
+   <a href="{% url 'setview'  o.name %}"> {{ o }}</a> <br>
+    {% endfor %}
+
+
+<!--</select>-->
+</div>
+
+      <div id="zmaD2016"> </div>
+      <div id="dummy1"> </div>
+      <div id="dummy2"> </div>
+
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <hr>
+
+      <footer>
+      </footer>
+    </div>
+
+        <!--<script src="js/main_sg.js"></script>-->
+
+    <script> sgv("{% static "efp/testdata/testdata_efp.csv" %}")</script>
+{%endblock%}
