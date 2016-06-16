@@ -166,8 +166,10 @@ function drawHeatmap(url) {
                     .style({"font-size": "10px", "z-index": "999999999"})
                     .style("text-anchor", "end")
                     .text(function (d) {
-                        return d.name //accession + ", " + d.condition + ", " + d.AID
-                    });
+                        return d.name ///{% url efp d.name //accession + ", " + d.condition + ", " + d.AID
+                    })
+                    .on('click', openViewer);
+                    ;
                 // enter for cols
                 var tmp = tileArray.enter()
                     .append("g")
@@ -524,7 +526,15 @@ function drawHeatmap(url) {
                 }
 
                 hm_update();
-                }
+            }
+
+            function openViewer(e){
+                console.log(e)
+                url = "/efp/"+e.name
+                console.log(e.name)
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
 
 
             // add buttons
