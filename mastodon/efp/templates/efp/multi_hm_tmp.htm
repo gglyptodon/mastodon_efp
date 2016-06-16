@@ -1,21 +1,41 @@
 {% extends 'efp/base.html' %}
 {% load static from staticfiles %}
 {% block content %}
- <script src="{% static "efp/js/main_multi_tmp.js" %}"></script>
+ <script src="{% static "efp/js/heatmap.js" %}"></script>
       <div class="container">
         <h2>{{ result.display_name }}</h2>
 
       </div>
 <div id="table"></div>
-<div id="viz"></div>
+<div class="container">
+<div id="heatmap"></div></div>
+   <div class="col-md-3">
+            <a href="#cb">Filter rows</a><br>
+            <a href="#rb">Filter columns</a><br>
+            <button class="btn btn-primary" onclick="hm_redrawButtonClick()">redraw heatmap</button>
+        </div>
+    </div>
+    <div class="row">
+        <div id="cb" class="col-md-5">Columns:<br>
+        </div>
+         <div class="col-md-1"> <a href="#heatmap">Back to top</a> </div>
+        <div id="rb" class="col-md-5">Rows:<br></div>
+
+    </div>
+    <div>
+    <a href="#heatmap">Back to top</a></div>
+    </div>
 <div class="container">
 <p> {{ result.description |safe }} </p>
     </div>
+
+
+
 
       <hr>
 
       <footer>
       </footer>
     </div>
- <script> run('{% url "setmembers" result.name %}')</script>
+ <script> drawHeatmap('{% url "setmembers" result.name %}')</script>
 {% endblock %}

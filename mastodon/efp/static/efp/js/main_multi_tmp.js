@@ -58,6 +58,7 @@ var rownum = null;
 var run = function(url){
     var genemapping={};
     d3.json(url, function (error, data) {
+        console.log(data)
         data = JSON.parse(data);//unescape
         var allvals = [];
         var rownames = [];

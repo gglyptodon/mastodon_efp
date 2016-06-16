@@ -1,9 +1,11 @@
 function drawHeatmap(url) {
     d3.json(url, function (error, pdata) {
+            pdata = JSON.parse(pdata)
+            //console.log(pdata)
             var margin = {top: 250, right: 0, bottom: 0, left: 250};
 
-            var blockheight = 30;
-            var blockwidth = 30;
+            var blockheight = 40;
+            var blockwidth = 40;
 
             var links = pdata.links;
             var links_orig = JSON.parse(JSON.stringify(links));
@@ -13,9 +15,23 @@ function drawHeatmap(url) {
             // collect all values for color range
             var allvalues = [];
             var allvaluesDct = {};
+            var perGeneAllVals = {}
+            sourcenodes.forEach(function(s){
+                console.log(s,"s")
+                perGeneAllVals[s.index] = [];
+            });
 
-            var indexMapX = {};
-            var indexMapY = {};
+            console.log(links, "links")
+            links.forEach(function(l){
+                console.log("l.source",l.source, perGeneAllVals)
+                perGeneAllVals[l.source].push(l.value) //for the domain
+                })
+                //console.log(l)
+                //perGeneAllVals[l].push(l.value) //for the domain
+
+
+            //var indexMapX = {};
+            //var indexMapY = {};
 
             var isDesc = true;
 
@@ -34,7 +50,7 @@ function drawHeatmap(url) {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            var sortColumnID = 0;
+            //var sortColumnID = 0;
             var orders = {
                 indexY: d3.range(sourcenodes.length)
                     .sort(
@@ -45,26 +61,37 @@ function drawHeatmap(url) {
                     return d3.ascending(targetnodes[a].index, targetnodes[b].index);
                 }),
                 //just the default; onclick reorderByColumn
-                valY: d3.range(sourcenodes.length)
-                    .sort(
-                    function (a, b) {
-                        return d3.descending(allvaluesDct[sourcenodes[a].index+"_"+sortColumnID], allvaluesDct[sourcenodes[b].index+"_"+sortColumnID])
-                    })
+                //valY: d3.range(sourcenodes.length)
+                //    .sort(
+                //    function (a, b) {
+                //        return d3.descending(allvaluesDct[sourcenodes[a].index+"_"+sortColumnID], allvaluesDct[sourcenodes[b].index+"_"+sortColumnID])
+                //    })
             };
 
 
-            //scales and color
+            //scales and color //todo scale by row
+            var genezDct = {}
+            for (x in sourcenodes){
+                //console.log(x, "xi")
+                genezDct[x] = d3.scale.linear()
+                .range(["purple", "yellow"])
+                .domain([
+                    d3.min(perGeneAllVals[x]),
+                    d3.max(perGeneAllVals[x])
+                    ]
+                    )
+            }
             var z = d3.scale.linear().
-                range(["green", "yellow"]).domain([d3.min(allvalues), d3.max(allvalues)]);
+                range(["purple", "yellow"]).domain([d3.min(allvalues), d3.max(allvalues)]);
             var y_scale = d3.scale.ordinal()
                 .rangeBands([0, height - margin.top]); //domain will be defined later
 
             var x_scale = d3.scale.ordinal().rangeBands([0, width - margin.left]);
 
             // set domains
-            sortY = orders.indexY;
+            //sortY = orders.indexY;
             x_scale.domain(orders.indexX);
-            y_scale.domain(orders.valY);
+            y_scale.domain(orders.indexY);
 
 
             var tileArray; //refers to the links
@@ -89,6 +116,7 @@ function drawHeatmap(url) {
             function bindDataTarget(data) {
                 colArray = svg.select("#heatmapG").selectAll(".hmcol")
                     .data(data, function (d) {
+                    //console.log(d,d.name,"d.name heatmapG, col")
                         return d.name
                     });
             }
@@ -96,6 +124,7 @@ function drawHeatmap(url) {
             function bindDataSource(data) {
                 rowArray = svg.select("#heatmapG").selectAll(".hmrow")
                     .data(data, function (d) {
+                        //console.log(d,d.name,"d.name heatmapG, row")
                         return d.name
                     });
             }
@@ -137,12 +166,13 @@ function drawHeatmap(url) {
                     .style({"font-size": "10px", "z-index": "999999999"})
                     .style("text-anchor", "end")
                     .text(function (d) {
-                        return d.accession + ", " + d.condition + ", " + d.AID
+                        return d.name //accession + ", " + d.condition + ", " + d.AID
                     });
                 // enter for cols
                 var tmp = tileArray.enter()
                     .append("g")
                     .attr("transform", function (d) {
+                        //console.log(xpos[d.target], "xposd.target", d.target, x_scale(d.target), x_scale(xpos[d.target]),d)
                         return "translate(" + +x_scale(xpos[d.target]) + ", " + y_scale(ypos[d.source]) + ")"; //column coordinate //todo scale
 
                     })
@@ -153,14 +183,15 @@ function drawHeatmap(url) {
                     .style("stroke", "black")
                     .style("stroke-width", "1px")
                     .style("fill", function (d) {
-                        return z(d.value)
+                        //console.log(genezDct, d.source, d.value, z, genezDct[d.source])
+                        return genezDct[d.source](d.value) //new
                     });
                 tmp.append("text")
                     .attr("transform", function (d, i) {
                         return "translate(" + blockwidth / 2 + ", " + blockheight / 2 + ")";
                     })
                     .attr("fill", function (d) {
-                        return getContrastYIQ(z(d.value).slice(1))
+                        return getContrastYIQ(genezDct[d.source](d.value).slice(1))
                     })
                     .style("stroke-width", 1)
                     .style({"font-size": "10px", "z-index": "999999999"})
@@ -185,7 +216,7 @@ function drawHeatmap(url) {
                     .style({"font-size": "10px", "z-index": "999999999"})
                     .style("text-anchor", "start")
                     .text(function (d) {
-                        return d.accession + ", " + d.condition
+                        return d.name //.accession + ", " + d.condition
                     })
                     .on('click',reorderByColumn);
 
@@ -235,7 +266,7 @@ function drawHeatmap(url) {
                     .style({"font-size": "10px", "z-index": "999999999"})
                     .style("text-anchor", "end")
                     .text(function (d) {
-                        return d.accession + ", " + d.condition + ", " + d.AID
+                        return d.name //accession + ", " + d.condition + ", " + d.AID
                     });
 
 
@@ -251,14 +282,16 @@ function drawHeatmap(url) {
                     .style("stroke", "black")
                     .style("stroke-width", "1px")
                     .style("fill", function (d) {
-                        return z(d.value)
+                        //console.log(z, genezDct, d.source)
+                        return genezDct[d.source](d.value)
+                        //return z(d.value)
                     });
                 tmp.select("text")
                     .attr("transform", function (d, i) {
                         return "translate(" + blockwidth / 2 + ", " + blockheight / 2 + ")";
                     })
                     .attr("fill", function (d) {
-                        return getContrastYIQ(z(d.value).slice(1))
+                        return getContrastYIQ(genezDct[d.source](d.value).slice(1))
                     })
                     .style("stroke-width", 1)
                     .style({"font-size": "10px", "z-index": "999999999"})
@@ -282,7 +315,7 @@ function drawHeatmap(url) {
                     .style({"font-size": "10px", "z-index": "999999999"})
                     .style("text-anchor", "start")
                     .text(function (d) {
-                        return d.accession + ", " + d.condition
+                        return d.name //accession + ", " + d.condition
                     });
 
 
@@ -496,26 +529,26 @@ function drawHeatmap(url) {
 
             // add buttons
             // for the rows
-            var rbc = d3.select("#rb").append("div").attr("id", "rbc").selectAll("button");
-            rbc.data(sourcenodes)
-                .enter()
-                .append("text")
-                .append("button")
-                .attr("class", "btn btn-primary btn-xs")
-                .attr("onclick", "hm_rowButtonClick(this)")
-                .text(function (d) {
-                    return d.name;
-                })
-
-            var cbc = d3.select("#cb").append("div").attr("id", "cbc").selectAll("button");
-            cbc.data(targetnodes)
-                .enter()
-                .append("button")
-                .attr("class", "btn btn-primary btn-xs")
-                .attr("onclick", "hm_colButtonClick(this)")
-                .text(function (d) {
-                    return d.name;
-                })
+//            var rbc = d3.select("#rb").append("div").attr("id", "rbc").selectAll("button");
+//            rbc.data(sourcenodes)
+//                .enter()
+//                .append("text")
+//                .append("button")
+//                .attr("class", "btn btn-primary btn-xs")
+//                .attr("onclick", "hm_rowButtonClick(this)")
+//                .text(function (d) {
+//                    return d.name;
+//                })
+//
+//            var cbc = d3.select("#cb").append("div").attr("id", "cbc").selectAll("button");
+//            cbc.data(targetnodes)
+//                .enter()
+//                .append("button")
+//                .attr("class", "btn btn-primary btn-xs")
+//                .attr("onclick", "hm_colButtonClick(this)")
+//                .text(function (d) {
+//                    return d.name;
+//                })
 
         }
     );

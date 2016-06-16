@@ -31,7 +31,7 @@ class FDR_csv(models.Model):
 
 
 class GeneSet(models.Model):
-    """Triggers post_save and get its members (Gene) as json from the csv to members field; Gene instances must exist beforehand """
+    """ Triggers post_save and get its members (Gene) as json from the csv to members field; Gene instances must exist beforehand """
     source_csv = models.FileField(null=True, blank=True)
     members = models.TextField(null=True, blank=True)
     members_name = models.TextField(null=True, blank=True)
@@ -43,7 +43,16 @@ class GeneSet(models.Model):
         return self.name
 
 
-
+class GeneSetComparison(models.Model):
+    name = models.CharField(max_length=200, primary_key=True)
+    source_csv = models.FileField(null=True, blank=True)
+    # {"referenceNodes" : [{samplename, index}, ], queryNodes=[{maize_name, index},]; "links": [{"source": indexreference, "target": indexquery, "value": val},]}
+    jsondata =  models.TextField(null=True, blank=True)
+    members_names = models.TextField(null=True, blank=True)
+    display_name = models.CharField(max_length=200, blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
+    def __unicode__(self):
+        return self.name+"_Comp"
 
 class Gene(models.Model):
     """
@@ -322,6 +331,36 @@ def set_csv_populate_members(sender, created, **kwargs):
         inst.members_name = res_name
         inst.save()
 
+@receiver(post_save, sender=GeneSetComparison)
+def set_csv_populate_jsondata(sender, created, **kwargs):
+    """ Populate members from csv for GeneSet """
+    # open csv, csv has only maize identifiers
+    inst = kwargs.get('instance')
+    csv = inst.source_csv._get_path()
+    member_names = []
+    referenceNodes = []
+    queryNodes = []
+    for i, n in enumerate(NameConstants.SAMPLES):
+        queryNodes.append({"name": n, "index": i})
+    links = []
+    if created:
+        with open(csv, 'r') as infile:
+            for i,l in enumerate(infile):
+                l = l.strip()
+                member_names.append(l)
+                obj = Gene.objects.get(maize_name = l)
+                referenceNodes.append({"name": l, "index": i})
+                for k,v in obj.__dict__.items():
+                    #print(k,v, l, k in NameConstants.SAMPLES_FIELDNAMES)
+                    if k in NameConstants.SAMPLES_FIELDNAMES:
+                        #query_index = queryNodes.index(queryNodes[NameConstants.SAMPLES_FIELDNAMES.index(k)])
+                        #print(query_index, NameConstants.SAMPLES_FIELDNAMES, k, v)
+                        links.append({"source": i, "target": NameConstants.SAMPLES_FIELDNAMES.index(k), "value": v})
+
+        resjson = json.dumps({"referenceNodes": referenceNodes, "queryNodes": queryNodes, "links":links})
+        inst.jsondata = resjson
+        inst.members_names = member_names
+        inst.save()
 
 #@receiver(post_save, sender = Set_csv)
 # def set_to_json(sender, created, **kwargs):
@@ -347,3 +386,48 @@ def make_unique_directory_path(instance, filename):
     return 'documents/'+datetime.date.today().isoformat()+"/"+str(uuid4())+'/{0}'.format(filename)
 
 
+class NameConstants:
+    SAMPLES = ["Tausta_2014.BS.Section_4",
+               "Tausta_2014.BS.Section_9",
+               "Tausta_2014.BS.Section_14",
+               "Chang_2012.BS",
+               "Denton_2016.BS.Slice_5",
+               "Denton_2016.BS.Slice_4",
+               "Denton_2016.BS.Slice_3",
+               "Denton_2016.BS.Slice_2",
+               "Denton_2016.BS.Slice_1",
+               "Tausta_2014.M.Section_4",
+               "Tausta_2014.M.Section_9",
+               "Tausta_2014.M.Section_14",
+               "Chang_2012.M",
+               "Denton_2016.M.Slice_5",
+               "Denton_2016.M.Slice_4",
+               "Denton_2016.M.Slice_3",
+               "Denton_2016.M.Slice_2",
+               "Denton_2016.M.Slice_1",
+               "Li_2010.total.Section_4",
+               "Li_2010.total.Section_9",
+               "Li_2010.total.Section_14"
+               ]
+    SAMPLES_FIELDNAMES = ['expression_TPM_Tausta_BSS4',
+                          'expression_TPM_Tausta_BSS9',
+                          'expression_TPM_Tausta_BSS14',
+                          'expression_TPM_Chang_BS',
+                          'expression_TPM_Denton_BSS5',
+                          'expression_TPM_Denton_BSS4',
+                          'expression_TPM_Denton_BSS3',
+                          'expression_TPM_Denton_BSS2',
+                          'expression_TPM_Denton_BSS1',
+                          'expression_TPM_Tausta_MS4',
+                          'expression_TPM_Tausta_MS9',
+                          'expression_TPM_Tausta_MS14',
+                          'expression_TPM_Chang_M',
+                          'expression_TPM_Denton_MS5',
+                          'expression_TPM_Denton_MS4',
+                          'expression_TPM_Denton_MS3',
+                          'expression_TPM_Denton_MS2',
+                          'expression_TPM_Denton_MS1',
+                          'expression_TPM_Li_totalS4',
+                          'expression_TPM_Li_totalS9',
+                          'expression_TPM_Li_totalS14'
+                          ]

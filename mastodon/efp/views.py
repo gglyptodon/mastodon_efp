@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Gene, GeneSet, TPM_csv
+from .models import Gene, GeneSetComparison, TPM_csv
 from django.forms.models import model_to_dict
 from django.core import serializers
 import json
@@ -54,7 +54,7 @@ def gene_index(request):
 
 def geneset_index(request):
     context = {}
-    result_list = GeneSet.objects.all()
+    result_list = GeneSetComparison.objects.all()
     print(result_list)
     #context["result_list"] = [str(r.name) for r in result_list]
     context["result_list"] = result_list
@@ -84,7 +84,7 @@ def index(request):
 
 def setview(request, id):
     """ multi gene viewer, eg for displaying conflict sets etc. """
-    result = GeneSet.objects.get(pk=id)
+    result = GeneSetComparison.objects.get(pk=id)
 
     context = {"result":result}
     template = 'efp/multi_hm_tmp.htm'
@@ -93,6 +93,6 @@ def setview(request, id):
 
 def setmembers(request, id):
     """ multi gene viewer, eg for displaying conflict sets etc. """
-    result = GeneSet.objects.get(pk=id)
-    return JsonResponse(result.members, safe=False)
+    result = GeneSetComparison.objects.get(pk=id)
+    return JsonResponse(result.jsondata, safe=False)
 
