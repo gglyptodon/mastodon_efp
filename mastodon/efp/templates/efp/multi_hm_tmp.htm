@@ -1,41 +1,34 @@
 {% extends 'efp/base.html' %}
 {% load static from staticfiles %}
 {% block content %}
+<style>
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 50px;
+    height: 15px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightgrey;
+    border: 0px;
+    border-radius: 2px;
+    pointer-events: none;
+}
+</style>
  <script src="{% static "efp/js/heatmap.js" %}"></script>
       <div class="container">
         <h2>{{ result.display_name }}</h2>
-
       </div>
 <div id="table"></div>
 <div class="container">
-<div id="heatmap"></div></div>
-   <div class="col-md-3">
-            <a href="#cb">Filter rows</a><br>
-            <a href="#rb">Filter columns</a><br>
-            <button class="btn btn-primary" onclick="hm_redrawButtonClick()">redraw heatmap</button>
-        </div>
-    </div>
-    <div class="row">
-        <div id="cb" class="col-md-5">Columns:<br>
-        </div>
-         <div class="col-md-1"> <a href="#heatmap">Back to top</a> </div>
-        <div id="rb" class="col-md-5">Rows:<br></div>
-
-    </div>
-    <div>
-    <a href="#heatmap">Back to top</a></div>
-    </div>
-<div class="container">
 <p> {{ result.description |safe }} </p>
-    </div>
+<div id="heatmap"></div>
+</div>
 
-
-
+<div class="container">
 
       <hr>
-
-      <footer>
-      </footer>
+      <footer> </footer>
     </div>
  <script> drawHeatmap('{% url "setmembers" result.name %}')</script>
 {% endblock %}

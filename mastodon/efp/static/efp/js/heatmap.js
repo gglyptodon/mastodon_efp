@@ -4,8 +4,8 @@ function drawHeatmap(url) {
             //console.log(pdata)
             var margin = {top: 250, right: 0, bottom: 0, left: 250};
 
-            var blockheight = 40;
-            var blockwidth = 40;
+            var blockheight = 20;
+            var blockwidth = 20;
 
             var links = pdata.links;
             var links_orig = JSON.parse(JSON.stringify(links));
@@ -16,6 +16,12 @@ function drawHeatmap(url) {
             var allvalues = [];
             var allvaluesDct = {};
             var perGeneAllVals = {}
+
+            // Define the div for the tooltip
+              var div = d3.select("body").append("div")
+               .attr("class", "tooltip")
+               .style("opacity", 0);
+
             sourcenodes.forEach(function(s){
                 console.log(s,"s")
                 perGeneAllVals[s.index] = [];
@@ -74,9 +80,9 @@ function drawHeatmap(url) {
             for (x in sourcenodes){
                 //console.log(x, "xi")
                 genezDct[x] = d3.scale.linear()
-                .range(["purple", "yellow"])
+                .range(["white", "yellow","red"])
                 .domain([
-                    d3.min(perGeneAllVals[x]),
+                    d3.min(perGeneAllVals[x]),(d3.min(perGeneAllVals[x])+d3.max(perGeneAllVals[x]))/2,
                     d3.max(perGeneAllVals[x])
                     ]
                     )
@@ -187,7 +193,21 @@ function drawHeatmap(url) {
                     .style("fill", function (d) {
                         //console.log(genezDct, d.source, d.value, z, genezDct[d.source])
                         return genezDct[d.source](d.value) //new
-                    });
+                    })//new
+                    .on("mouseover", function(d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div	.html(d.value.toFixed(1) + "<br/>")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            })
+        .on("mouseout", function(d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        });
+
                 tmp.append("text")
                     .attr("transform", function (d, i) {
                         return "translate(" + blockwidth / 2 + ", " + blockheight / 2 + ")";
@@ -199,7 +219,7 @@ function drawHeatmap(url) {
                     .style({"font-size": "10px", "z-index": "999999999"})
                     .style("text-anchor", "middle")
                     .text(function (d) {
-                        return +d.value.toFixed(1);
+                        return null//return +d.value.toFixed(1);
                     });
 
 
@@ -299,7 +319,7 @@ function drawHeatmap(url) {
                     .style({"font-size": "10px", "z-index": "999999999"})
                     .style("text-anchor", "middle")
                     .text(function (d) {
-                        return +d.value.toFixed(1);
+                        return null //+d.value.toFixed(1);
                     });
 
 

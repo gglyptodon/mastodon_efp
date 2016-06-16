@@ -9,41 +9,24 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
-    <div class="jumbotron">
-      <div class="container">
+<div class="container">
           <div id="myGrid" style="width:1200px;height:500px;"></div>
-<div id="geneselid">
-</div>
-
-      <div id="zmaD2016"> </div>
-      <div id="dummy1"> </div>
-      <div id="dummy2"> </div>
-
-      </div>
     </div>
 
     <div class="container">
       <!-- Example row of columns -->
-      </div>
       <hr>
 
       <footer>
       </footer>
     </div>
 
-        <!--<script src="js/main_sg.js"></script>-->
-
-
-
-    <div id="fmtww"></div>
-    <div id="fmtwd"></div>
-
 
 
 <link rel="stylesheet" href="{% static "vendor/SlickGrid/slick.grid.css" %}" type="text/css"/>
     <link rel="stylesheet" href="{% static "vendor/SlickGrid/css/smoothness/jquery-ui-1.8.16.custom.css" %}" type="text/css"/>
-    <!--<link rel="stylesheet" href="{% static "vendor/SlickGrid/examples/examples.css" %}"  type="text/css"/>
--->
+    <!--<link rel="stylesheet" href="{% static "vendor/SlickGrid/examples/examples.css" %}"  type="text/css"/>-->
+
     <script src="{% static "vendor/SlickGrid/lib/jquery-1.7.min.js" %}"></script>
     <script src="{% static "vendor/SlickGrid/lib/jquery.event.drag-2.2.js" %}" ></script>
 
@@ -55,16 +38,7 @@
 
 
 <script type="text/javascript">
-//d3.json("{% url "tablejson" %}", function(error, data) {
 d3.json("{% static "efp/resources/tb.json" %}", function(error, data) {
-
-
-
-
-
-  //  console.log(data,"data");
-
-  //  console.log(error,"errr");
     var dt = data;
     for (var i = 0; i < dt.length; i++) {
    dt[i]["id"] = i;
