@@ -1,7 +1,6 @@
 function drawHeatmap(url) {
     d3.json(url, function (error, pdata) {
             pdata = JSON.parse(pdata)
-            //console.log(pdata)
             var margin = {top: 250, right: 0, bottom: 0, left: 250};
 
             var blockheight = 20;
@@ -23,16 +22,12 @@ function drawHeatmap(url) {
                .style("opacity", 0);
 
             sourcenodes.forEach(function(s){
-                console.log(s,"s")
                 perGeneAllVals[s.index] = [];
             });
 
-            console.log(links, "links")
             links.forEach(function(l){
-                console.log("l.source",l.source, perGeneAllVals)
                 perGeneAllVals[l.source].push(l.value) //for the domain
                 })
-                //console.log(l)
                 //perGeneAllVals[l].push(l.value) //for the domain
 
 
@@ -78,7 +73,6 @@ function drawHeatmap(url) {
             //scales and color //todo scale by row
             var genezDct = {}
             for (x in sourcenodes){
-                //console.log(x, "xi")
                 genezDct[x] = d3.scale.linear()
                 .range(["white", "yellow","red"])
                 .domain([
@@ -122,7 +116,6 @@ function drawHeatmap(url) {
             function bindDataTarget(data) {
                 colArray = svg.select("#heatmapG").selectAll(".hmcol")
                     .data(data, function (d) {
-                    //console.log(d,d.name,"d.name heatmapG, col")
                         return d.name
                     });
             }
@@ -130,7 +123,6 @@ function drawHeatmap(url) {
             function bindDataSource(data) {
                 rowArray = svg.select("#heatmapG").selectAll(".hmrow")
                     .data(data, function (d) {
-                        //console.log(d,d.name,"d.name heatmapG, row")
                         return d.name
                     });
             }
@@ -180,7 +172,6 @@ function drawHeatmap(url) {
                 var tmp = tileArray.enter()
                     .append("g")
                     .attr("transform", function (d) {
-                        //console.log(xpos[d.target], "xposd.target", d.target, x_scale(d.target), x_scale(xpos[d.target]),d)
                         return "translate(" + +x_scale(xpos[d.target]) + ", " + y_scale(ypos[d.source]) + ")"; //column coordinate //todo scale
 
                     })
@@ -191,7 +182,6 @@ function drawHeatmap(url) {
                     .style("stroke", "black")
                     .style("stroke-width", "1px")
                     .style("fill", function (d) {
-                        //console.log(genezDct, d.source, d.value, z, genezDct[d.source])
                         return genezDct[d.source](d.value) //new
                     })//new
                     .on("mouseover", function(d) {
@@ -304,7 +294,6 @@ function drawHeatmap(url) {
                     .style("stroke", "black")
                     .style("stroke-width", "1px")
                     .style("fill", function (d) {
-                        //console.log(z, genezDct, d.source)
                         return genezDct[d.source](d.value)
                         //return z(d.value)
                     });
@@ -549,9 +538,7 @@ function drawHeatmap(url) {
             }
 
             function openViewer(e){
-                console.log(e)
                 url = "/efp/"+e.name
-                console.log(e.name)
                 var win = window.open(url, '_blank');
                 win.focus();
             }
