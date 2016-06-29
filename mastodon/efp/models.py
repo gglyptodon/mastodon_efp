@@ -136,6 +136,8 @@ class Gene(models.Model):
 
     source_tpm = models.ForeignKey(to=TPM_csv, null=True, blank=True)
     source_fdr = models.ForeignKey(to=FDR_csv, null=True, blank=True)
+
+    threeprime_bias = models.FloatField(null=True, blank=True)
     #  keys:
     # "Tausta_BSS4_vs_MS4", "Tausta_BSS9_vs_MS9", Tausta_BSS14_vs_MS14"
     # "Chang_BS_vs_M",
