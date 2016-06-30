@@ -20,6 +20,22 @@
     stroke: #000;
     shape-rendering: crispEdges;
 }
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 40px;
+    height: 20px;
+    padding: 3px;
+    font: 12px sans-serif;
+    background: lightgrey;
+    border: 0px;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+
+
 </style>
 
 
@@ -56,23 +72,36 @@
     </div>
 
     <div class="container">
-      </div>
-<div id="legend"></div>
+<div class="row">
+    <div class="col-xs-6">
+
 <div id="tpb"></div>
+<!--* rel. coverage depth (3' 100bp / total)-->
+</div>
+    <div class="col-xs-6">
+
+<div id="legend"></div>
+</div>
+</div>
+      </div>
       <hr>
 <script>
+// Define the div for the tooltip
+var div = d3.select("body").append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
 
 
 
 
 
-var margin = {top: 20, right: 20, bottom: 170, left: 40},
+var margin = {top: 10, right: 20, bottom: 100, left: 40},
     width = 300 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
 var x = d3.scale.linear().domain([0,2]).range([0,100]);
-
-var y = d3.scale.linear().domain([0,20]).range([height, 0]);
+var c = d3.scale.linear().domain([0,2]).range(['black','purple']);
+var y = d3.scale.linear().domain([0,10]).range([height, 0]);
 
 
 var xAxis = d3.svg.axis()
@@ -96,9 +125,8 @@ var svg = d3.select("#tpb").append("svg")
 
 
 d3.json('{% url "efpjson" result %}', function(error, data) {
-    console.log(data);
-
-    svg.append("g")
+    	if (!data.threeprime_bias){return;}
+	svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis)
@@ -116,12 +144,12 @@ d3.json('{% url "efpjson" result %}', function(error, data) {
             .attr("y", 6)
             .attr("dy", ".31em")
             .style("text-anchor", "end")
-            .text("3' bias");
+            .text("3' bias*");
 
     svg.selectAll("bar")
             .data([data])
             .enter().append("rect")
-            .style("fill", "#892200")
+            .style("fill", function(d){console.log(c); c(d.threeprime_bias);return c(d.threeprime_bias)})//c(d.threeprime_bias})// "#892200")
             .attr("x", function (d) {
                 return x(1);
             })
@@ -132,6 +160,28 @@ d3.json('{% url "efpjson" result %}', function(error, data) {
             .attr("height", function (d) {
                 return height - y(d.threeprime_bias);
             })
+
+                    .on("mouseover", function(d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div	.html(d.threeprime_bias.toFixed(1) + "<br/>")
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            })
+        .on("mouseout", function(d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+
+})
+
+
+d3.select("#tpb").append("p").text("* rel. coverage depth (3' 100bp / total)");
+
+
+
+
 });
 </script>
 
