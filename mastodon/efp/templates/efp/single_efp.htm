@@ -99,7 +99,7 @@ var margin = {top: 10, right: 20, bottom: 100, left: 40},
     width = 300 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom;
 
-var x = d3.scale.linear().domain([0,2]).range([0,100]);
+var x = d3.scale.linear().domain([0,2]).range([0,50]);
 var c = d3.scale.linear().domain([0,2]).range(['black','purple']);
 var y = d3.scale.linear().domain([0,10]).range([height, 0]);
 
@@ -149,11 +149,11 @@ d3.json('{% url "efpjson" result %}', function(error, data) {
     svg.selectAll("bar")
             .data([data])
             .enter().append("rect")
-            .style("fill", function(d){console.log(c); c(d.threeprime_bias);return c(d.threeprime_bias)})//c(d.threeprime_bias})// "#892200")
+            .style("fill", function(d){return c(d.threeprime_bias)})
             .attr("x", function (d) {
-                return x(1);
+                return x(0.5);
             })
-            .attr("width", "10px")
+            .attr("width", "25px")
             .attr("y", function (d) {
                 return y(d.threeprime_bias);
             })
